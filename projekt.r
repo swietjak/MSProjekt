@@ -1,6 +1,7 @@
 library(e1071)
 # koszty = c(449.6, 315.1, 447.2, 258.3, 391.3, 297.2, 295.3, 303.4, 312.3, 369.3, 385.8, 466, 302.1, 304.3, 359.5, 309.2, 371.7, 504.6, 414.5, 321.9, 386.2, 489, 514.6, 249.8, 184.7, 452.8, 513.2, 540.4, 458.1, 459.4, 259.5, 296.4, 397.1, 525.7, 331.3, 232.4, 222.4, 418.9, 265.5, 282.8, 543.6, 387.8, 343.1, 351.6, 440.9, 403.3, 370.2, 207.6, 223.3, 304.3, 283.9)
 # obroty = c(575.6, 250.8, 271.8, 337, 198.6, 361.7, 361.5, 447.2, 345, 455.9, 393.1, 368.3, 400, 449.7, 252.7, 437, 290.1, 297.7, 525.5, 411, 419.4, 530, 409.6, 474, 303.7, 246.8, 458.4, 480.3, 199.6, 461.9, 321.5, 305.7, 379.8, 493.2, 294, 322.9, 368.5, 262.4, 494.9, 446.7, 322.8, 475.8, 320, 252.6, 353.5, 303.3, 396.6, 255.6, 540.6)
+source('functions.r')
 dane <- read.csv("dane.csv", sep = ",", header = FALSE)
 koszty <- as.vector(dane[[1]], mode = "numeric")
 obroty <- as.vector(dane[[2]], mode = "numeric")
@@ -12,38 +13,36 @@ obrotyDl <- length(obroty)
 koszty <- sort(koszty)
 obroty <- sort(obroty)
 
+kosztySr <- mean(koszty)
+obrotySr <- mean(obroty)
+
+kosztyWariancja <- var(koszty)
+obrotyWariancja <- var(obroty)
+
 zadanie1 <- function() {
-  kosztySr <- mean(koszty)
-  obrotySr <- mean(obroty)
+
+  kosztyDominanta <- dominanta(koszty)
 
   print("WARTOSCI DLA SZEREGOW")
 
   kosztyQ1 <- quantile(koszty, .25)
   obrotyQ1 <- quantile(obroty, .25)
 
-  cat("Kwantyl pierwszy dla kosztow: ", kosztyQ1, "\n")
-  cat("Kwantyl pierwszy dla obrotow: ", obrotyQ1, "\n")
 
   kosztyMedian <- quantile(koszty, .5)
   obrotyMedian <- quantile(obroty, .5)
 
-  cat("Mediana dla kosztow: ", kosztyMedian, "\n")
-  cat("Mediana dla obrotow: ", obrotyMedian, "\n")
+
 
   kosztyQ3 <- quantile(koszty, .75)
   obrotyQ3 <- quantile(obroty, .75)
 
-  cat("Kwantyl trzeci dla kosztow: ", kosztyQ3, "\n")
-  cat("Kwantyl trzeci dla obrotow: ", obrotyQ3, "\n")
 
   kosztyRostepCwiartkowy <- kosztyQ3 - kosztyQ1
   obrotyRostepCwiartkowy <- obrotyQ3 - obrotyQ1
 
   cat("Rozstep cwiartkowy dla kosztow: ", kosztyRostepCwiartkowy, "\n")
   cat("Rozstep cwiartkowy dla obrotow: ", obrotyRostepCwiartkowy, "\n")
-
-  kosztyWariancja <- var(koszty)
-  obrotyWariancja <- var(obroty)
 
   cat("Wariancja dla kosztow: ", kosztyWariancja, "\n")
   cat("Wariancja dla obrotow: ", obrotyWariancja, "\n")
@@ -182,25 +181,23 @@ zadanie1 <- function() {
 #Zadanie 2
 #Sprawdzenie czy roczne dzialalnosci koszty maja rozklad normalny
 
-zadanie2 <- function() {
-  k <- 0.1241 # szukamy odpowiedzniego k z tab kolomogorwa lillieforsa
-  p <- pnorm((koszty - mean(koszty)) / sd(koszty)) # rozklad normalny z koszty-mean(koszty))/sd(koszty)
+zadanie2 <- function(dane) {
+  k = 0
+  dane <- sort(dane)
+  daneD1 <- length(dane)
+  if (daneD1 == 51) { k = 0.1241 }
+  else { k = 0.1266 }
+  # szukamy odpowiedzniego k z tab kolomogorwa lillieforsa
+  p <- pnorm((dane - mean(dane)) / sd(dane)) # rozklad normalny z koszty-mean(koszty))/sd(koszty)
   # Statystyki testowe ktora sa miara rozbieznosci pomiedzy rozkladem empirycznym i hipotetycznym:
   # Rozklad empiryczny to dystrybuanta rozkl
-  DKosztyPlus <- max(seq(1:kosztyDl) / kosztyDl - p) #seq wektor bedacy ciagiem arytmetycznym
-  DKosztyMinus <- max(p - (seq(1:kosztyDl) - 1) / kosztyDl)
-  dKoszty <- max(DKosztyPlus, DKosztyMinus)
-  if (dKoszty < k) {
-    cat("Koszty maja rozklad normalny\n")
+  DanePlus <- max(seq(1:daneD1) / daneD1 - p) #seq wektor bedacy ciagiem arytmetycznym
+  DaneMinus <- max(p - (seq(1:daneDl) - 1) / daneDl)
+  d <- max(DanePlus, DaneMinus)
+  if (d < k) {
+    cat("Roczne koszty i obroty maja rozklad normalny\n")
   } else {
-    cat("Koszty nie maja rozkladu normalnego\n")
-  }
-  #obroty ale z ks.test
-  zmiennaChwilowa <- ks.test(obroty, "pnorm", mean(obroty), sd(obroty))
-  if (zmiennaChwilowa[2] > 0.05) {
-    cat("Obroty maja rozkład normalny")
-  } else {
-    cat("Obroty nie maja rozkładu normalny")
+    cat("Roczne koszty i obroty nie maja rozkladu normalnego\n")
   }
 }
 
@@ -255,8 +252,90 @@ zadanie4 <- function() {
   }
 }
 
-zadanie5 <- function() {
-  var.test(koszty, obroty)
+test_f_snedecora <- function() {
 
-  t.test(koszty, obroty, alternative = c("greater"))
+  alfa <- 0.05;
+
+  print("Test   F-Snedeco ra")
+  print("H0: wariancje obu populacji sa rowne")
+  print("H1: wariancje kosztow jest wieksza od wariancji obrotow")
+
+  #obliczamy wartosc statystyki F
+  statystyka_f = (var(koszty) * (length(koszty) / (length(koszty) - 1))) / (var(obroty) * (length(obroty) / (length(obroty) - 1)))
+
+  #obliczamy kwantyle rozkladu F Snedecora
+  #Gdy hipoteza jest prawdziwa to statystyka F ma rozkład F-Snedecora z (n-1) i (m-1) stopniami swobody
+  kwartyle_f = qf(c(alfa / 2, 1 - alfa / 2), length(koszty) - 1, length(obroty) - 1)
+
+  cat(" Wartosc obliczonej statystyki:", statystyka_f, '\n')
+  cat(" Obszarem krytycznym jest przedzial:(0, ", kwartyle_f[1], ") u(", kwartyle_f[2], ", inf) . \n")
+
+  #sprawdzamy czy statystyka nalezy do obszaru testowego
+
+  if (statystyka_f > kwartyle_f[1] && statystyka_f < kwartyle_f[2]) {
+    print("Wartość statystyki nie nalezy do obszaru krytycznego")
+    print("Wiec nie ma podstwy do odrzucenia hipotezy H0 o rownosci wariancji kosztow i obrotow")
+    return(TRUE)
+  } else {
+    print("Wartosc statystyki nalezy do obszaru krytycznego")
+    print("Odrzucamy hipoteze H0")
+    return(FALSE)
+  }
+}
+
+test_t_studenta <- function() {
+
+  print("Test t-Studenta")
+  print("H0: Srednie obroty sa rowne kosztom")
+  statystyka_t <- (kosztySr - obrotySr) / sqrt((kosztyDl * kosztyWariancja + obrotyDl * obrotyWariancja) * (1 / kosztyDl + 1 / obrotyDl) / (kosztyDl - 1 + obrotyDl - 1))
+  kwartyl_t = qt(1 - alfa, df = kosztyDl + obrotyDl - 2)
+
+  cat("Wartosc obliczonej statystyki: ", statystyka_t, " \n")
+  cat("Obszar krytyczny: (", kwartyl_t, ", inf) \n")
+
+  #sprawdzenie czy obliczona statystyka naleze do obszaru krytycznego
+  if (statystyka_t > kwartyl_t) {
+    print("Obliczona statystyka nalezy do obszaru krytyczne go")
+  } else {
+    print("Obliczona statystyka nie nalezy do obszaru krytycznego.")
+    print("Brak podstaw do odrzucenia hipotezy zerowej H0")
+
+  }
+}
+
+test_t_studenta_c_coxa <- function() {
+  alfa = 0.05
+  print("Test t-Studenta z korekta Cocharana-Coxa")
+  print("H0: Srednie obroty rownaja sie kosztom.")
+  print("H1: Srednie obroty sa wieksze niz srednie koszta.")
+
+  wariancjaNieobciazonaKosztow = kosztyDl * kosztyWariancja / (kosztyDl - 1)
+  wariancjaNieobciazonaObrotow = obrotyDl * obrotyWariancja / (obrotyDl - 1)
+
+  statystyka_t = (mean(koszty) - mean(obroty)) / sqrt(kosztyWariancja / kosztyDl + obrotyWariancja / obrotyDl - 1)
+
+  kwantyl_t = (kosztyWar * qt(1 - alfa, kosztyDl - 1) / kosztyDl + obrotyWariancja * qt(1 - alfa, kosztyDl - 1) / obrotyDl
+             / (kosztyWariancja / kosztyDl) + obrotyWariancja / obrotyDl)
+
+  #czy statystyka nalezy do obszaru krytycznego
+  if (statystyka_t > kwartyl_t) {
+    print("Obliczona statystyka naezy do obszaru krytycznego")
+    print("odrzucamy hipoteze zerowa")
+
+  } else {
+    print("obliczona statystyka nie nalezy do obszaru krytycznego")
+    print("brak podstaw do odrzucenia hipotezy H0")
+  }
+}
+
+zadanie5 <- function() {
+
+  #sprawdzenie czy wariancje kosztow i obrotow sa rowne
+  if (test_f_snedecora()) {
+    test_t_studenta()
+  }
+  else {
+    #dodajemy do t studenta poprawke coharana coxa bo odkrylismy ze wariancje kosztow i obrotow sa rozne
+    test_t_studenta_c_coxa()
+  }
 }

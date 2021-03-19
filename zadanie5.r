@@ -3,4 +3,4 @@ obroty = c(575.6, 250.8, 271.8, 337, 198.6, 361.7, 361.5, 447.2, 345, 455.9, 393
 
 var.test(koszty, obroty)
 
-t.test(koszty, obroty, alternative = c("greater"))
+t.test(koszty, obroty, alternative = c("greater")) 
