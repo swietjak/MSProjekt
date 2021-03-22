@@ -5,25 +5,35 @@ obroty = c(575.6, 250.8, 271.8, 337, 198.6, 361.7, 361.5, 447.2, 345, 455.9, 393
 zadanie4 -> function(obroty) {
   obrotyWariancja = var(obroty)
   obrotyDlugosc = length(obroty)
-  obrotyOdchylenie = sd(obroty)
+
+  cat("Wariancja:", obrotyWariancja, "\n")
+  cat("Liczebnosc przedzialu: ", obrotyDlugosc, "\n")
+
+
+  #obrotyOdchylenie = sd(obroty)
 
   #Wyznaczenie przedziału ufności
   obrotyDolnaGranica = obrotyDlugosc * obrotyWariancja / qchisq(0.975, obrotyDlugosc - 1)
   obrotyGornaGranica = obrotyDlugosc * obrotyWariancja / qchisq(0.025, obrotyDlugosc - 1)
 
+  cat("Dolna granica przedzialu ufnosci: ", obrotyDolnaGranica, "\n")
+  cat("Gorna granica przedzialu ufnosci: ", obrotyGornaGranica, "\n\n\n")
+
   #Wyznaczenie względnej prezycji oszacowania
-  precyzja = (obrotyGornaGranica - obrotyDolnaGranica) * 100 / obrotyOdchylenie ** 2
-  print("Precyzja: ")
-  precyzja
+  #precyzja = (obrotyGornaGranica - obrotyDolnaGranica) * 100 / obrotyOdchylenie ** 2
+  precyzja = (obrotyGornaGranica - obrotyDolnaGranica) * 100 / obrotyWariancja
+
+  cat("Wzgledna precyzja oszacowania: ", precyzja, "\n")
 
   #Sprawdzenie, czy mamy podstawy do uogólnienia otrzymanego przedziału ufności na całą populację rocznych obrotów
-  chikwadrat = ((obrotyDlugosc - 1) * obrotyOdchylenie ** 2) / obrotyWariancja
+  # chikwadrat = ((obrotyDlugosc - 1) * obrotyOdchylenie ** 2) / obrotyWariancja
 
-  if (chikwadrat > obrotyDolnaGranica && chikwadrat < obrotyDolnaGranica) {
-    print("mozna przyjac oszacowanie")
-  } else {
-    print("nie mozna przyjac oszacowania")
-  }
+  # if (chikwadrat > obrotyDolnaGranica && chikwadrat < obrotyDolnaGranica) {
+  #   print("mozna przyjac oszacowanie")
+  # } else {
+  #   print("nie mozna przyjac oszacowania")
+  # }
+
 
   #Wzgledna precyzja wynosi około 88%, więc wyników tej próby nie można uogólniać dla całej populacji.
 }

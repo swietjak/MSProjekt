@@ -5,11 +5,18 @@ obroty = c(575.6, 250.8, 271.8, 337, 198.6, 361.7, 361.5, 447.2, 345, 455.9, 393
 #Zadanie 3
 
 zadanie3 <- function(koszty) {
+
   koszty = sort(koszty)
   kosztyLiczebosc = length(koszty)
   kosztySuma = sum(koszty)
   kosztySr = mean(koszty)
   kosztyOdchylStd = sd(koszty)
+
+  cat("Liczebnosc przedzialu: ", kosztyLiczebosc, "\n")
+  cat("Suma wartosci:", kosztySuma, "\n")
+  cat("Srednia: ", kosztySr, "\n")
+  cat("Odchylenie standardowe: ", kosztyOdchylStd, "\n\n\n")
+
 
   #Wyznaczenie wspolczynnika t-Studenta
 
@@ -19,33 +26,25 @@ zadanie3 <- function(koszty) {
 
   kosztyTStudent = qt(alfa, kosztyLiczebosc - 1, lower.tail = FALSE)
 
+  cat("Wspolczynnik t-Studenta ", kosztyTStudent, "\n\n\n")
+
   #Wyznaczenie przedziału ufności
 
 
   kosztyDolnaGranica = kosztySr - kosztyTStudent * (kosztyOdchylStd / (sqrt(kosztyLiczebosc - 1)))
   kosztyGornaGranica = kosztySr + kosztyTStudent * (kosztyOdchylStd / (sqrt(kosztyLiczebosc - 1)))
 
-  print("Dolna granica przedzialu ufnosci: ")
-  kosztyDolnaGranica
 
-  print("Gorna granica przedzialu ufnosci: ")
-  kosztyGornaGranica
+  cat("Dolna granica przedzialu ufnosci: ", kosztyDolnaGranica, "\n")
+  cat("Gorna granica przedzialu ufnosci: ", kosztyGornaGranica, "\n\n\n")
+
 
   #Obliczenie względnej precyzji oszacowania
 
-  kosztyPrecyzja = 0.5 * (kosztyGornaGranica - kosztyDolnaGranica) / kosztySr
+  kosztyPrecyzja = 0.5 * (kosztyGornaGranica - kosztyDolnaGranica) * 100 / kosztySr
 
-  print("Wzgledna precyzja oszacowania: ")
-  kosztyPrecyzja
-  
+  cat("Wzgledna precyzja oszacowania: ", kosztyPrecyzja, "\n")
+
   #sprawdzenie, czy mamy podstawy do uogólnienia otrzymanego przedziału ufności na całą populację rocznych kosztów działalności?
-  #Wzgledna prezycja wynosi około 6%, więc wynik można uogólnić dla całej populacji
+  #Wzgledna prezycja wynosi około 6%, więc wynik można uogólnić dla całej populacji(z pewnymi zastrzeżeniami)
 }
-
-skosnosc <- function(x) {
-  licznik <- momentCentralny(x, 3)
-  mianownik <- sqrt(var(x))
-  mianowik = mianownik ** 3
-  return(licznik / mianownik)
-}
-

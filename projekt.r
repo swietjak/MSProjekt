@@ -19,63 +19,69 @@ obrotySr <- mean(obroty)
 kosztyWariancja <- var(koszty)
 obrotyWariancja <- var(obroty)
 
+kosztyOdchylenieSt = sd(koszty)
+obrotyOdchylenieSt = sd(obroty)
+
 zadanie1 <- function() {
 
   kosztyDominanta <- dominanta(koszty)
+  obrotyDominanta <- dominanta(obroty)
 
-  print("WARTOSCI DLA SZEREGOW")
+  cat("\n", format("WARTOSCI DLA SZEREGOW SZCZEGOLOWEGO", width = 40, justify = c("left")), format("KOSZTY", width = 20, justify = c("right")), format("OBROTY", width = 20, justify = c("right")), "\n")
 
   kosztyQ1 <- quantile(koszty, .25)
   obrotyQ1 <- quantile(obroty, .25)
 
-
   kosztyMedian <- quantile(koszty, .5)
   obrotyMedian <- quantile(obroty, .5)
-
-
 
   kosztyQ3 <- quantile(koszty, .75)
   obrotyQ3 <- quantile(obroty, .75)
 
-
   kosztyRostepCwiartkowy <- kosztyQ3 - kosztyQ1
   obrotyRostepCwiartkowy <- obrotyQ3 - obrotyQ1
 
-  cat("Rozstep cwiartkowy dla kosztow: ", kosztyRostepCwiartkowy, "\n")
-  cat("Rozstep cwiartkowy dla obrotow: ", obrotyRostepCwiartkowy, "\n")
-
-  cat("Wariancja dla kosztow: ", kosztyWariancja, "\n")
-  cat("Wariancja dla obrotow: ", obrotyWariancja, "\n")
-
-  kosztyOdchylenie <- sd(koszty)
-  obrotyOdchylenie <- sd(obroty)
-
-  cat("Odchylenie standardowe dla kosztow: ", kosztyOdchylenie, "\n")
-  cat("Odchylenie standardowe dla obrotow: ", obrotyOdchylenie, "\n")
-
-  kosztyWspolczynnikZmiennosci <- kosztyOdchylenie / kosztySr
-  obrotyWspolczynnikZmiennosci <- obrotyOdchylenie / obrotySr
-
-  cat("Wspolczynnik zmiennosci dla kosztow: ", kosztyWspolczynnikZmiennosci, "\n")
-  cat("Wspolczynnik zmiennosci dla obrotow: ", obrotyWspolczynnikZmiennosci, "\n")
+  kosztyWspolczynnikZmiennosci <- kosztyOdchylenieSt / kosztySr
+  obrotyWspolczynnikZmiennosci <- obrotyOdchylenieSt / obrotySr
 
   kosztyOdchylenieCwiartkowe <- kosztyRostepCwiartkowy / 2
   obrotyOdchylenieCwiartkowe <- obrotyRostepCwiartkowy / 2
 
-  cat("Odchylenie cwiartkowe dla kosztow: ", kosztyOdchylenieCwiartkowe, "\n")
-  cat("Odchylenie cwiartkowe dla obrotow: ", obrotyOdchylenieCwiartkowe, "\n")
+  kosztyAsymetria <- skosnosc(koszty)
+  obrotyAsymetria <- skosnosc(obroty)
 
-  kosztyAsymetria <- moment(koszty, order = 3, center = TRUE)
-  obrotyAsymetria <- moment(obroty, order = 3, center = TRUE)
+  kosztyKoncentracja <- kurtoza(koszty)
+  obrotyKoncentracja <- kurtoza(obroty)
 
-  cat("Asymetria dla kosztow: ", kosztyAsymetria, "\n")
-  cat("Asymetria dla obrotow: ", obrotyAsymetria, "\n")
+  kosztyEksces <- kosztyKoncentracja - 3
+  obrotyEksces <- obrotyKoncentracja - 3
 
-  kosztyKoncentracja <- moment(koszty, order = 4, center = TRUE)
-  obrotyKoncentracja <- moment(obroty, order = 4, center = TRUE)
+  kosztyOdchPrzec <- odchyleniePrzecietne(koszty)
+  obrotyOdchPrzec <- odchyleniePrzecietne(obroty)
 
-  cat("Koncentracja dla kosztow: ", kosztyKoncentracja, "\n")
-  cat("Koncentracja dla obrotow: ", obrotyKoncentracja, "\n")
+  kosztyOdchPrzecOdMed <- odchyleniePrzecietneOdMediany(koszty)
+  obrotyOdchPrzecOdMed <- odchyleniePrzecietneOdMediany(obroty)
+
+  kosztyWariancjaNieobc <- wariancjaNieobc(koszty)
+  obrotyWariancjaNieobc <- wariancjaNieobc(obroty)
+
+  wypiszParametr(kosztySr, obrotySr, "Srednia")
+  wypiszParametr(kosztyOdchylenieSt, obrotyOdchylenieSt, "Odchylenie standardowe")
+  wypiszParametr(kosztyWariancja, obrotyWariancja, "Wariancja")
+  wypiszParametr(kosztyWariancjaNieobc, obrotyWariancjaNieobc, "Wariancja nieobciazona")
+  wypiszParametr(kosztyDominanta, obrotyDominanta, "Moda")
+  wypiszParametr(kosztyQ1, obrotyQ1, "Kwantyl 1")
+  wypiszParametr(kosztyMedian, obrotyMedian, "Mediana")
+  wypiszParametr(kosztyQ3, obrotyQ3, "Kwantyl 3")
+  wypiszParametr(kosztyRostepCwiartkowy, obrotyRostepCwiartkowy, "Rozstep cwiartkowy")
+  wypiszParametr(kosztyWspolczynnikZmiennosci, obrotyWspolczynnikZmiennosci, "Wspolczynnik zmiennosci")
+  wypiszParametr(kosztyOdchylenieCwiartkowe, obrotyOdchylenieCwiartkowe, "Odchylenie cwiartkowe")
+  wypiszParametr(kosztyOdchPrzec, obrotyOdchPrzec, "Odchylenie przecietne")
+  wypiszParametr(kosztyOdchPrzecOdMed, obrotyOdchPrzecOdMed, "Odchylenie przecietne od mediany")
+  wypiszParametr(kosztyAsymetria, obrotyAsymetria, "Skosnosc")
+  wypiszParametr(kosztyKoncentracja, obrotyKoncentracja, "Kurtoza")
+  wypiszParametr(kosztyEksces, obrotyEksces, "Eksces")
+
 
   #szereg rozdzielczy
 
@@ -100,73 +106,73 @@ zadanie1 <- function() {
   kosztySzerRozdz <- table(kosztyPrzed)
   obrotySzerRozdz <- table(obrotyPrzed)
 
+  kosztySzerRozdzVec <- as.vector(kosztySzerRozdz, "numeric")
+  obrotySzerRozdzVec <- as.vector(obrotySzerRozdz, "numeric")
+
   print("PARAMETRY DLA SZEREGU ROZDZIELCZEGO")
+  cat("\n", format("WARTOSCI DLA SZEREGOW ROZDZIELCZYCH", width = 40, justify = c("left")), format("KOSZTY", width = 20, justify = c("right")), format("OBROTY", width = 20, justify = c("right")), "\n")
 
-  kosztySzerRozdzSr <- mean(kosztySzerRozdz)
-  obrotySzerRozdzSr <- mean(obrotySzerRozdz)
+  kosztySzerRozdzSr <- sredniaPrzedzialowa(kosztyPunkty, kosztySzerRozdzVec)
+  obrotySzerRozdzSr <- sredniaPrzedzialowa(obrotyPunkty, obrotySzerRozdzVec)
 
-  cat("Srednia dla kosztow: ", kosztySzerRozdzSr, "\n")
-  cat("Srednia dla obrotow: ", obrotySzerRozdzSr, "\n")
+  kosztySzerRozdzQ1 <- kwartyl(kosztyPunkty, kosztySzerRozdzVec, kosztySzerPrzed, 1)
+  obrotySzerRozdzQ1 <- kwartyl(obrotyPunkty, obrotySzerRozdzVec, obrotySzerPrzed, 1)
 
-  kosztySzerRozdzQ1 <- quantile(kosztySzerRozdz, .25)
-  obrotySzerRozdzQ1 <- quantile(obrotySzerRozdz, .25)
+  kosztySzerRozdzMedian <- kwartyl(kosztyPunkty, kosztySzerRozdzVec, kosztySzerPrzed, 2)
+  obrotySzerRozdzMedian <- kwartyl(obrotyPunkty, obrotySzerRozdzVec, obrotySzerPrzed, 2)
 
-  cat("Kwantyl pierwszy dla kosztow: ", kosztySzerRozdzQ1, "\n")
-  cat("Kwantyl pierwszy dla obrotow: ", obrotySzerRozdzQ1, "\n")
-
-  kosztySzerRozdzMedian <- quantile(kosztySzerRozdz, .5)
-  obrotySzerRozdzMedian <- quantile(obrotySzerRozdz, .5)
-
-  cat("Mediana dla kosztow: ", kosztySzerRozdzMedian, "\n")
-  cat("Mediana dla obrotow: ", obrotySzerRozdzMedian, "\n")
-
-  kosztySzerRozdzQ3 <- quantile(kosztySzerRozdz, .75)
-  obrotySzerRozdzQ3 <- quantile(obrotySzerRozdz, .75)
-
-  cat("Kwantyl trzeci dla kosztow: ", kosztySzerRozdzQ3, "\n")
-  cat("Kwantyl trzeci dla obrotow: ", obrotySzerRozdzQ3, "\n")
+  kosztySzerRozdzQ3 <- kwartyl(kosztyPunkty, kosztySzerRozdzVec, kosztySzerPrzed, 3)
+  obrotySzerRozdzQ3 <- kwartyl(obrotyPunkty, obrotySzerRozdzVec, obrotySzerPrzed, 3)
 
   kosztySzerRozdzRostepCwiartkowy <- kosztySzerRozdzQ3 - kosztySzerRozdzQ1
   obrotySzerRozdzRostepCwiartkowy <- obrotySzerRozdzQ3 - obrotySzerRozdzQ1
 
-  cat("Rozstep cwiartkowy dla kosztow: ", kosztySzerRozdzRostepCwiartkowy, "\n")
-  cat("Rozstep cwiartkowy dla obrotow: ", obrotySzerRozdzRostepCwiartkowy, "\n")
+  kosztySzerRozdzWariancja <- wariancjaPrzedzial(kosztyPunkty, kosztySzerRozdzVec)
+  obrotySzerRozdzWariancja <- wariancjaPrzedzial(obrotyPunkty, obrotySzerRozdzVec)
 
-  kosztySzerRozdzWariancja <- var(kosztySzerRozdz)
-  obrotySzerRozdzWariancja <- var(obrotySzerRozdz)
+  kosztySzerRozdzOdchylenie <- sqrt(kosztySzerRozdzWariancja)
+  obrotySzerRozdzOdchylenie <- sqrt(obrotySzerRozdzWariancja)
 
-  cat("Wariancja dla kosztow: ", kosztySzerRozdzWariancja, "\n")
-  cat("Wariancja dla obrotow: ", obrotySzerRozdzWariancja, "\n")
+  kosztySzerRozdzOdchPrzec <- odchyleniePrzecietnePrzedzialowe(kosztyPunkty, kosztySzerRozdzVec)
+  obrotySzerRozdzOdchPrzec <- odchyleniePrzecietnePrzedzialowe(obrotyPunkty, obrotySzerRozdzVec)
 
-  kosztySzerRozdzOdchylenie <- sd(kosztySzerRozdz)
-  obrotySzerRozdzOdchylenie <- sd(obrotySzerRozdz)
-
-  cat("Odchylenie standardowe dla kosztow: ", kosztySzerRozdzOdchylenie, "\n")
-  cat("Odchylenie standardowe dla obrotow: ", obrotySzerRozdzOdchylenie, "\n")
-
-  kosztySzerRozdzWspolczynnikZmiennosci <- kosztySzerRozdzOdchylenie / kosztySzerRozdzSr
-  obrotySzerRozdzWspolczynnikZmiennosci <- obrotySzerRozdzOdchylenie / obrotySzerRozdzSr
-
-  cat("Wspolczynnik zmiennosci dla kosztow: ", kosztySzerRozdzWspolczynnikZmiennosci, "\n")
-  cat("Wspolczynnik zmiennosci dla obrotow: ", obrotySzerRozdzWspolczynnikZmiennosci, "\n")
+  kosztySzerRozdzWspolczynnikZmiennosci <- wspolczynnikZmiennosciPrzedzialowe(kosztyPunkty, kosztySzerRozdzVec)
+  obrotySzerRozdzWspolczynnikZmiennosci <- wspolczynnikZmiennosciPrzedzialowe(obrotyPunkty, obrotySzerRozdzVec)
 
   kosztySzerRozdzOdchylenieCwiartkowe <- kosztySzerRozdzRostepCwiartkowy / 2
   obrotySzerRozdzOdchylenieCwiartkowe <- obrotySzerRozdzRostepCwiartkowy / 2
 
-  cat("Odchylenie Cwiartkowe dla kosztow: ", kosztySzerRozdzOdchylenieCwiartkowe, "\n")
-  cat("Odchylenie Cwiartkowe dla obrotow: ", obrotySzerRozdzOdchylenieCwiartkowe, "\n")
+  kosztySzerRozdzAsymetria <- skosnoscPrzedzialowa(kosztyPunkty, kosztySzerRozdzVec)
+  obrotySzerRozdzAsymetria <- skosnoscPrzedzialowa(obrotyPunkty, obrotySzerRozdzVec)
 
-  kosztySzerRozdzAsymetria <- moment(kosztySzerRozdz, order = 3, center = TRUE)
-  obrotySzerRozdzAsymetria <- moment(obrotySzerRozdz, order = 3, center = TRUE)
 
-  cat("Asymetria dla kosztow: ", kosztySzerRozdzAsymetria, "\n")
-  cat("Asymetria dla obrotow: ", obrotySzerRozdzAsymetria, "\n")
+  kosztySzerRozdzKoncentracja <- kurtozaPrzedzialowa(kosztyPunkty, kosztySzerRozdzVec)
+  obrotySzerRozdzKoncentracja <- kurtozaPrzedzialowa(obrotyPunkty, obrotySzerRozdzVec)
 
-  kosztySzerRozdzKoncentracja <- moment(kosztySzerRozdz, order = 4, center = TRUE)
-  obrotySzerRozdzKoncentracja <- moment(obrotySzerRozdz, order = 4, center = TRUE)
+  kosztySzerRozdzEksces = kosztySzerRozdzKoncentracja - 3
+  obrotySzerRozdzEksces = obrotySzerRozdzKoncentracja - 3
 
-  cat("Koncentracja dla kosztow: ", kosztySzerRozdzKoncentracja, "\n")
-  cat("Koncentracja dla obrotow: ", obrotySzerRozdzKoncentracja, "\n")
+  kosztySzerRozdzDominanta = moda(kosztyPunkty, kosztySzerRozdzVec, kosztySzerPrzed)
+  obrotySzerRozdzDominanta = moda(obrotyPunkty, obrotySzerRozdzVec, obrotySzerPrzed)
+
+  kosztySzerRozdzOdchPrzecOdMed = odchyleniePrzecietnePrzedzialoweOdMediany(kosztyPunkty, kosztySzerRozdzVec, kosztySzerPrzed)
+  obrotySzerRozdzOdchPrzecOdMed = odchyleniePrzecietnePrzedzialoweOdMediany(obrotyPunkty, obrotySzerRozdzVec, obrotySzerPrzed)
+
+  wypiszParametr(kosztySzerRozdzSr, obrotySzerRozdzSr, "Srednia")
+  wypiszParametr(kosztySzerRozdzOdchylenie, obrotySzerRozdzOdchylenie, "Odchylenie standardowe")
+  wypiszParametr(kosztySzerRozdzWariancja, obrotySzerRozdzWariancja, "Wariancja")
+  wypiszParametr(kosztySzerRozdzDominanta, obrotySzerRozdzDominanta, "Moda")
+  wypiszParametr(kosztySzerRozdzQ1, obrotySzerRozdzQ1, "Kwartyl 1")
+  wypiszParametr(kosztySzerRozdzMedian, obrotySzerRozdzMedian, "Mediana")
+  wypiszParametr(kosztySzerRozdzQ3, obrotySzerRozdzQ3, "Kwartyl 3")
+  wypiszParametr(kosztySzerRozdzRostepCwiartkowy, obrotySzerRozdzRostepCwiartkowy, "Rozstep cwiartkowy")
+  wypiszParametr(kosztySzerRozdzWspolczynnikZmiennosci, obrotySzerRozdzWspolczynnikZmiennosci, "Wspolczynnik zmiennosci")
+  wypiszParametr(kosztySzerRozdzOdchylenieCwiartkowe, obrotySzerRozdzOdchylenieCwiartkowe, "Odchylenie cwiartkowe")
+  wypiszParametr(kosztySzerRozdzOdchPrzec, obrotySzerRozdzOdchPrzec, "Odchylenie przecietne")
+  wypiszParametr(kosztySzerRozdzOdchPrzecOdMed, obrotySzerRozdzOdchPrzecOdMed, "Odchylenie przecietne od mediany")
+  wypiszParametr(kosztySzerRozdzAsymetria, obrotySzerRozdzAsymetria, "Skosnosc")
+  wypiszParametr(kosztySzerRozdzKoncentracja, obrotySzerRozdzKoncentracja, "Kurtoza")
+  wypiszParametr(kosztySzerRozdzEksces, obrotySzerRozdzEksces, "Eksces")
 
   #histogramy rozkladow empirycznych
 
@@ -178,32 +184,45 @@ zadanie1 <- function() {
   axis(1, at = seq(obrotyMin, obrotyMax, by = obrotySzerPrzed), labels = seq(obrotyMin, obrotyMax, by = obrotySzerPrzed))
 }
 
+
 #Zadanie 2
 #Sprawdzenie czy roczne dzialalnosci koszty maja rozklad normalny
 
-zadanie2 <- function(dane) {
+zadanie2 <- function(dane, nazwa_zbioru) {
   k = 0
+  d = 0
+  p = 0
+  daneD1 = 0
+  DanePlus = 0
+  DaneMinus = 0
   dane <- sort(dane)
   daneD1 <- length(dane)
   if (daneD1 == 51) { k = 0.1241 }
-  else { k = 0.1266 }
+  if (DaneD1 == 49) { k = 0.1266 }
   # szukamy odpowiedzniego k z tab kolomogorwa lillieforsa
   p <- pnorm((dane - mean(dane)) / sd(dane)) # rozklad normalny z koszty-mean(koszty))/sd(koszty)
   # Statystyki testowe ktora sa miara rozbieznosci pomiedzy rozkladem empirycznym i hipotetycznym:
   # Rozklad empiryczny to dystrybuanta rozkl
   DanePlus <- max(seq(1:daneD1) / daneD1 - p) #seq wektor bedacy ciagiem arytmetycznym
-  DaneMinus <- max(p - (seq(1:daneDl) - 1) / daneDl)
+  DaneMinus <- max(p - (seq(1:daneD1) - 1) / daneD1)
   d <- max(DanePlus, DaneMinus)
+  cat("Wartość statystyki testowej: ", d)
+  cat("Wartość k: ", k)
   if (d < k) {
-    cat("Roczne koszty i obroty maja rozklad normalny\n")
+    cat("Roczne", nazwa_zbioru, "maja rozklad normalny\n")
   } else {
-    cat("Roczne koszty i obroty nie maja rozkladu normalnego\n")
+    cat("Roczne", nazwa_zbioru, "nie maja rozkladu normalnego\n")
   }
 }
 
 zadanie3 <- function() {
   kosztySr = mean(koszty)
-  kosztyOdchylStd = sd(koszty)
+  kosztyOdchylenieSt = sd(koszty)
+
+  cat("Liczebnosc przedzialu: ", kosztyDl, "\n")
+  cat("Suma wartosci:", kosztySuma, "\n")
+  cat("Srednia: ", kosztySr, "\n")
+  cat("Odchylenie standardowe: ", kosztyOdchylenieSt, "\n\n\n")
 
   #Wyznaczenie wspolczynnika t-Studenta
 
@@ -211,51 +230,50 @@ zadanie3 <- function() {
 
   alfa = 1 - kosztyWspolczynnikUfnosci
 
-  kosztyTStudent = qt(alfa, kosztyLiczebosc - 1, lower.tail = FALSE)
+  kosztyTStudent = qt(alfa, kosztyDl - 1, lower.tail = FALSE)
 
-  #Obliczenie przedziału ufności
+  #Wyznaczenie przedziału ufności
 
-
-  kosztyDolnaGranica = kosztySr - kosztyTStudent * (kosztyOdchylStd / (sqrt(kosztyLiczebosc - 1)))
-  kosztyGornaGranica = kosztySr + kosztyTStudent * (kosztyOdchylStd / (sqrt(kosztyLiczebosc - 1)))
+  kosztyDolnaGranica = kosztySr - kosztyTStudent * (kosztyOdchylenieSt / (sqrt(kosztyDl - 1)))
+  kosztyGornaGranica = kosztySr + kosztyTStudent * (kosztyOdchylenieSt / (sqrt(kosztyDl - 1)))
 
   cat("Dolna granica przedzialu ufnosci: ", kosztyDolnaGranica, '\n')
-
-
   cat("Gorna granica przedzialu ufnosci: ", kosztyGornaGranica, '\n')
 
-  #Obliczenie precyzji oszacowania
+  #Obliczenie względnej precyzji oszacowania
 
   kosztyPrecyzja = 0.5 * (kosztyGornaGranica - kosztyDolnaGranica) / kosztySr
 
   cat("Wzgledna precyzja oszacowania: ", kosztyPrecyzja, '\n')
+
+  #sprawdzenie, czy mamy podstawy do uogólnienia otrzymanego przedziału ufności na całą populację rocznych kosztów działalności?
+  #Wzgledna prezycja wynosi około 6%, więc wynik można uogólnić dla całej populacji(z pewnymi zastrzeżeniami)
 }
 
 zadanie4 <- function() {
-  obrotyWariancja <- var(obroty)
-  obrotyDlugosc <- length(obroty)
-  obrotyOdchylenie <- sd(obroty)
 
-  obrotyDolnaGranica <- obrotyDlugosc * obrotyWariancja / qchisq(0.975, obrotyDlugosc - 1)
-  obrotyGornaGranica <- obrotyDlugosc * obrotyWariancja / qchisq(0.025, obrotyDlugosc - 1)
+  cat("Wariancja:", obrotyWariancja, "\n")
+  cat("Liczebnosc przedzialu: ", obrotyDl, "\n")
 
-  precyzja <- (obrotyGornaGranica - obrotyDolnaGranica) * 100 / obrotyOdchylenie ** 2
-  print("Precyzja: ")
-  precyzja
+  #Wyznaczenie przedziału ufności
+  obrotyDolnaGranica = obrotyDl * obrotyWariancja / qchisq(0.975, obrotyDl - 1)
+  obrotyGornaGranica = obrotyDl * obrotyWariancja / qchisq(0.025, obrotyDl - 1)
 
-  chikwadrat <- ((obrotyDlugosc - 1) * obrotyOdchylenie ** 2) / obrotyWariancja
+  cat("Dolna granica przedzialu ufnosci: ", obrotyDolnaGranica, "\n")
+  cat("Gorna granica przedzialu ufnosci: ", obrotyGornaGranica, "\n\n\n")
 
-  if (chikwadrat > obrotyDolnaGranica && chikwadrat < obrotyDolnaGranica) {
-    print("mozna przyjac oszacowanie")
-  } else {
-    print("nie mozna przyjac oszacowania")
-  }
+  #Wyznaczenie względnej prezycji oszacowania
+  precyzja = (obrotyGornaGranica - obrotyDolnaGranica) * 100 / obrotyWariancja
+
+  cat("Wzgledna precyzja oszacowania: ", precyzja, "\n")
+
+  #Wzgledna precyzja wynosi około 88%, więc wyników tej próby nie można uogólniać dla całej populacji.
+
 }
 
 test_f_snedecora <- function() {
 
   alfa <- 0.05;
-
   print("Test   F-Snedeco ra")
   print("H0: wariancje obu populacji sa rowne")
   print("H1: wariancje kosztow jest wieksza od wariancji obrotow")
@@ -273,7 +291,7 @@ test_f_snedecora <- function() {
   #sprawdzamy czy statystyka nalezy do obszaru testowego
 
   if (statystyka_f > kwartyle_f[1] && statystyka_f < kwartyle_f[2]) {
-    print("Wartość statystyki nie nalezy do obszaru krytycznego")
+    print("Wartosc statystyki nie nalezy do obszaru krytycznego")
     print("Wiec nie ma podstwy do odrzucenia hipotezy H0 o rownosci wariancji kosztow i obrotow")
     return(TRUE)
   } else {
@@ -284,10 +302,10 @@ test_f_snedecora <- function() {
 }
 
 test_t_studenta <- function() {
-
+  alfa = 0.05
   print("Test t-Studenta")
   print("H0: Srednie obroty sa rowne kosztom")
-  statystyka_t <- (kosztySr - obrotySr) / sqrt((kosztyDl * kosztyWariancja + obrotyDl * obrotyWariancja) * (1 / kosztyDl + 1 / obrotyDl) / (kosztyDl - 1 + obrotyDl - 1))
+  statystyka_t <- (kosztySr - obrotySr) / sqrt((kosztyDl * kosztyWariancja + obrotyDl * obrotyWariancja) * (1 / kosztyDl + 1 / obrotyDl) / (kosztyDl + obrotyDl - 2))
   kwartyl_t = qt(1 - alfa, df = kosztyDl + obrotyDl - 2)
 
   cat("Wartosc obliczonej statystyki: ", statystyka_t, " \n")
@@ -339,3 +357,4 @@ zadanie5 <- function() {
     test_t_studenta_c_coxa()
   }
 }
+
