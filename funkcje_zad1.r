@@ -1,9 +1,3 @@
-# kwantyl <- function(x,) { }
-
-dane <- read.csv("dane.csv", sep = ",", header = FALSE)
-koszty <- as.vector(dane[[1]], mode = "numeric")
-obroty <- as.vector(dane[[2]], mode = "numeric")
-
 policzWystapienia <- function(y, x) {
   wystapienia <- y
   for (i in length(y)) {
@@ -205,7 +199,3 @@ kurtozaPrzedzialowa <- function(granice, liczebnosc) {
   mianownik <- wariancjaPrzedzial(granice, liczebnosc) ^ 2
   return(licznik / mianownik)
 }
-
-
-
-

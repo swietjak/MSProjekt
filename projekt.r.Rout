@@ -19,270 +19,119 @@ Type 'q()' to quit R.
 
 [Previously saved workspace restored]
 
-> library(e1071)
-> # koszty = c(449.6, 315.1, 447.2, 258.3, 391.3, 297.2, 295.3, 303.4, 312.3, 369.3, 385.8, 466, 302.1, 304.3, 359.5, 309.2, 371.7, 504.6, 414.5, 321.9, 386.2, 489, 514.6, 249.8, 184.7, 452.8, 513.2, 540.4, 458.1, 459.4, 259.5, 296.4, 397.1, 525.7, 331.3, 232.4, 222.4, 418.9, 265.5, 282.8, 543.6, 387.8, 343.1, 351.6, 440.9, 403.3, 370.2, 207.6, 223.3, 304.3, 283.9)
-> # obroty = c(575.6, 250.8, 271.8, 337, 198.6, 361.7, 361.5, 447.2, 345, 455.9, 393.1, 368.3, 400, 449.7, 252.7, 437, 290.1, 297.7, 525.5, 411, 419.4, 530, 409.6, 474, 303.7, 246.8, 458.4, 480.3, 199.6, 461.9, 321.5, 305.7, 379.8, 493.2, 294, 322.9, 368.5, 262.4, 494.9, 446.7, 322.8, 475.8, 320, 252.6, 353.5, 303.3, 396.6, 255.6, 540.6)
-> dane <- read.csv("dane.csv", sep = ",", header = FALSE)
-> koszty <- as.vector(dane[[1]], mode = "numeric")
-> obroty <- as.vector(dane[[2]], mode = "numeric")
-> 
-> kosztyDl <- length(koszty)
-> obrotyDl <- length(obroty)
-> 
-> koszty <- sort(koszty)
-> obroty <- sort(obroty)
-> 
-> zadanie1 <- function() {
-+   kosztySr <- mean(koszty)
-+   obrotySr <- mean(obroty)
-+ 
-+   print("WARTOSCI DLA SZEREGOW")
-+ 
-+   kosztyQ1 <- quantile(koszty, .25)
-+   obrotyQ1 <- quantile(obroty, .25)
-+ 
-+   cat("Kwantyl pierwszy dla kosztow: ", kosztyQ1, "\n")
-+   cat("Kwantyl pierwszy dla obrotow: ", obrotyQ1, "\n")
-+ 
-+   kosztyMedian <- quantile(koszty, .5)
-+   obrotyMedian <- quantile(obroty, .5)
-+ 
-+   cat("Mediana dla kosztow: ", kosztyMedian, "\n")
-+   cat("Mediana dla obrotow: ", obrotyMedian, "\n")
-+ 
-+   kosztyQ3 <- quantile(koszty, .75)
-+   obrotyQ3 <- quantile(obroty, .75)
-+ 
-+   cat("Kwantyl trzeci dla kosztow: ", kosztyQ3, "\n")
-+   cat("Kwantyl trzeci dla obrotow: ", obrotyQ3, "\n")
-+ 
-+   kosztyRostepCwiartkowy <- kosztyQ3 - kosztyQ1
-+   obrotyRostepCwiartkowy <- obrotyQ3 - obrotyQ1
-+ 
-+   cat("Rozstep cwiartkowy dla kosztow: ", kosztyRostepCwiartkowy, "\n")
-+   cat("Rozstep cwiartkowy dla obrotow: ", obrotyRostepCwiartkowy, "\n")
-+ 
-+   kosztyWariancja <- var(koszty)
-+   obrotyWariancja <- var(obroty)
-+ 
-+   cat("Wariancja dla kosztow: ", kosztyWariancja, "\n")
-+   cat("Wariancja dla obrotow: ", obrotyWariancja, "\n")
-+ 
-+   kosztyOdchylenie <- sd(koszty)
-+   obrotyOdchylenie <- sd(obroty)
-+ 
-+   cat("Odchylenie standardowe dla kosztow: ", kosztyOdchylenie, "\n")
-+   cat("Odchylenie standardowe dla obrotow: ", obrotyOdchylenie, "\n")
-+ 
-+   kosztyWspolczynnikZmiennosci <- kosztyOdchylenie / kosztySr
-+   obrotyWspolczynnikZmiennosci <- obrotyOdchylenie / obrotySr
-+ 
-+   cat("Wspolczynnik zmiennosci dla kosztow: ", kosztyWspolczynnikZmiennosci, "\n")
-+   cat("Wspolczynnik zmiennosci dla obrotow: ", obrotyWspolczynnikZmiennosci, "\n")
-+ 
-+   kosztyOdchylenieCwiartkowe <- kosztyRostepCwiartkowy / 2
-+   obrotyOdchylenieCwiartkowe <- obrotyRostepCwiartkowy / 2
-+ 
-+   cat("Odchylenie cwiartkowe dla kosztow: ", kosztyOdchylenieCwiartkowe, "\n")
-+   cat("Odchylenie cwiartkowe dla obrotow: ", obrotyOdchylenieCwiartkowe, "\n")
-+ 
-+   kosztyAsymetria <- moment(koszty, order = 3, center = TRUE)
-+   obrotyAsymetria <- moment(obroty, order = 3, center = TRUE)
-+ 
-+   cat("Asymetria dla kosztow: ", kosztyAsymetria, "\n")
-+   cat("Asymetria dla obrotow: ", obrotyAsymetria, "\n")
-+ 
-+   kosztyKoncentracja <- moment(koszty, order = 4, center = TRUE)
-+   obrotyKoncentracja <- moment(obroty, order = 4, center = TRUE)
-+ 
-+   cat("Koncentracja dla kosztow: ", kosztyKoncentracja, "\n")
-+   cat("Koncentracja dla obrotow: ", obrotyKoncentracja, "\n")
-+ 
-+   #szereg rozdzielczy
-+ 
-+   kosztyMax <- max(koszty)
-+   obrotyMax <- max(obroty)
-+ 
-+   kosztyMin <- min(koszty)
-+   obrotyMin <- min(obroty)
-+ 
-+   kosztyDif <- kosztyMax - kosztyMin
-+   obrotyDif <- obrotyMax - obrotyMin
-+ 
-+   kosztySzerPrzed <- kosztyDif / ceiling(sqrt(kosztyDl))
-+   obrotySzerPrzed <- obrotyDif / ceiling(sqrt(obrotyDl))
-+ 
-+   kosztyPunkty <- seq(kosztyMin, kosztyMax + 0.1, by = kosztySzerPrzed) #0.1 dodane by uniknąć problemów
-+   obrotyPunkty <- seq(obrotyMin, obrotyMax + 0.1, by = obrotySzerPrzed) #0.1 dodane by uniknąć problemów
-+ 
-+   kosztyPrzed <- cut(koszty, kosztyPunkty, right = FALSE, inlude.lowest = TRUE)
-+   obrotyPrzed <- cut(obroty, obrotyPunkty, right = FALSE, inlude.lowest = TRUE)
-+ 
-+   kosztySzerRozdz <- table(kosztyPrzed)
-+   obrotySzerRozdz <- table(obrotyPrzed)
-+ 
-+   print("PARAMETRY DLA SZEREGU ROZDZIELCZEGO")
-+ 
-+   kosztySzerRozdzSr <- mean(kosztySzerRozdz)
-+   obrotySzerRozdzSr <- mean(obrotySzerRozdz)
-+ 
-+   cat("Srednia dla kosztow: ", kosztySzerRozdzSr, "\n")
-+   cat("Srednia dla obrotow: ", obrotySzerRozdzSr, "\n")
-+ 
-+   kosztySzerRozdzQ1 <- quantile(kosztySzerRozdz, .25)
-+   obrotySzerRozdzQ1 <- quantile(obrotySzerRozdz, .25)
-+ 
-+   cat("Kwantyl pierwszy dla kosztow: ", kosztySzerRozdzQ1, "\n")
-+   cat("Kwantyl pierwszy dla obrotow: ", obrotySzerRozdzQ1, "\n")
-+ 
-+   kosztySzerRozdzMedian <- quantile(kosztySzerRozdz, .5)
-+   obrotySzerRozdzMedian <- quantile(obrotySzerRozdz, .5)
-+ 
-+   cat("Mediana dla kosztow: ", kosztySzerRozdzMedian, "\n")
-+   cat("Mediana dla obrotow: ", obrotySzerRozdzMedian, "\n")
-+ 
-+   kosztySzerRozdzQ3 <- quantile(kosztySzerRozdz, .75)
-+   obrotySzerRozdzQ3 <- quantile(obrotySzerRozdz, .75)
-+ 
-+   cat("Kwantyl trzeci dla kosztow: ", kosztySzerRozdzQ3, "\n")
-+   cat("Kwantyl trzeci dla obrotow: ", obrotySzerRozdzQ3, "\n")
-+ 
-+   kosztySzerRozdzRostepCwiartkowy <- kosztySzerRozdzQ3 - kosztySzerRozdzQ1
-+   obrotySzerRozdzRostepCwiartkowy <- obrotySzerRozdzQ3 - obrotySzerRozdzQ1
-+ 
-+   cat("Rozstep cwiartkowy dla kosztow: ", kosztySzerRozdzRostepCwiartkowy, "\n")
-+   cat("Rozstep cwiartkowy dla obrotow: ", obrotySzerRozdzRostepCwiartkowy, "\n")
-+ 
-+   kosztySzerRozdzWariancja <- var(kosztySzerRozdz)
-+   obrotySzerRozdzWariancja <- var(obrotySzerRozdz)
-+ 
-+   cat("Wariancja dla kosztow: ", kosztySzerRozdzWariancja, "\n")
-+   cat("Wariancja dla obrotow: ", obrotySzerRozdzWariancja, "\n")
-+ 
-+   kosztySzerRozdzOdchylenie <- sd(kosztySzerRozdz)
-+   obrotySzerRozdzOdchylenie <- sd(obrotySzerRozdz)
-+ 
-+   cat("Odchylenie standardowe dla kosztow: ", kosztySzerRozdzOdchylenie, "\n")
-+   cat("Odchylenie standardowe dla obrotow: ", obrotySzerRozdzOdchylenie, "\n")
-+ 
-+   kosztySzerRozdzWspolczynnikZmiennosci <- kosztySzerRozdzOdchylenie / kosztySzerRozdzSr
-+   obrotySzerRozdzWspolczynnikZmiennosci <- obrotySzerRozdzOdchylenie / obrotySzerRozdzSr
-+ 
-+   cat("Wspolczynnik zmiennosci dla kosztow: ", kosztySzerRozdzWspolczynnikZmiennosci, "\n")
-+   cat("Wspolczynnik zmiennosci dla obrotow: ", obrotySzerRozdzWspolczynnikZmiennosci, "\n")
-+ 
-+   kosztySzerRozdzOdchylenieCwiartkowe <- kosztySzerRozdzRostepCwiartkowy / 2
-+   obrotySzerRozdzOdchylenieCwiartkowe <- obrotySzerRozdzRostepCwiartkowy / 2
-+ 
-+   cat("Odchylenie Cwiartkowe dla kosztow: ", kosztySzerRozdzOdchylenieCwiartkowe, "\n")
-+   cat("Odchylenie Cwiartkowe dla obrotow: ", obrotySzerRozdzOdchylenieCwiartkowe, "\n")
-+ 
-+   kosztySzerRozdzAsymetria <- moment(kosztySzerRozdz, order = 3, center = TRUE)
-+   obrotySzerRozdzAsymetria <- moment(obrotySzerRozdz, order = 3, center = TRUE)
-+ 
-+   cat("Asymetria dla kosztow: ", kosztySzerRozdzAsymetria, "\n")
-+   cat("Asymetria dla obrotow: ", obrotySzerRozdzAsymetria, "\n")
-+ 
-+   kosztySzerRozdzKoncentracja <- moment(kosztySzerRozdz, order = 4, center = TRUE)
-+   obrotySzerRozdzKoncentracja <- moment(obrotySzerRozdz, order = 4, center = TRUE)
-+ 
-+   cat("Koncentracja dla kosztow: ", kosztySzerRozdzKoncentracja, "\n")
-+   cat("Koncentracja dla obrotow: ", obrotySzerRozdzKoncentracja, "\n")
-+ 
-+   #histogramy rozkladow empirycznych
-+ 
-+   hist(koszty, breaks = kosztyPunkty, axes = F)
-+   axis(2)
-+   axis(1, at = seq(kosztyMin, kosztyMax, by = kosztySzerPrzed), labels = seq(kosztyMin, kosztyMax, by = kosztySzerPrzed))
-+   hist(obroty, breaks = obrotyPunkty, axes = F)
-+   axis(2)
-+   axis(1, at = seq(obrotyMin, obrotyMax, by = obrotySzerPrzed), labels = seq(obrotyMin, obrotyMax, by = obrotySzerPrzed))
-+ }
-> 
-> #Zadanie 2
-> #Sprawdzenie czy roczne dzialalnosci koszty maja rozklad normalny
-> 
-> zadanie2 <- function() {
-+   k <- 0.1241 # szukamy odpowiedzniego k z tab kolomogorwa lillieforsa
-+   p <- pnorm((koszty - mean(koszty)) / sd(koszty)) # rozklad normalny z koszty-mean(koszty))/sd(koszty)
-+   # Statystyki testowe ktora sa miara rozbieznosci pomiedzy rozkladem empirycznym i hipotetycznym:
-+   # Rozklad empiryczny to dystrybuanta rozkl
-+   DKosztyPlus <- max(seq(1:kosztyDl) / kosztyDl - p) #seq wektor bedacy ciagiem arytmetycznym
-+   DKosztyMinus <- max(p - (seq(1:kosztyDl) - 1) / kosztyDl)
-+   dKoszty <- max(DKosztyPlus, DKosztyMinus)
-+   if (dKoszty < k) {
-+     cat("Koszty maja rozklad normalny\n")
-+   } else {
-+     cat("Koszty nie maja rozkladu normalnego\n")
-+   }
-+   #obroty ale z ks.test
-+   zmiennaChwilowa <- ks.test(obroty, "pnorm", mean(obroty), sd(obroty))
-+   if (zmiennaChwilowa[2] > 0.05) {
-+     cat("Obroty maja rozkład normalny")
-+   } else {
-+     cat("Obroty nie maja rozkładu normalny")
-+   }
-+ }
-> 
-> #obroty = sort(obroty); 
-> 
-> #liczbaObrotow = lengh(obroty) #liczymy ile elementow maja obroty
-> #
-> k = 0.1473;
-> #  z tab kolomogorwa lillieforsa#p1=pnorm((obroty-mean(obroty))/sd(obroty))
-> #Dobrotyplus = max(seq(1:liczbaObrotow)/ l iczbaObrotow-p1 )#
-> #Dobrotyminus = min()
-> 
-> #Zadanie 3
-> #
-> 
+> source("funkcje_zadania.r")
 > 
 > zadanie1()
-[1] "WARTOSCI DLA SZEREGOW"
-Kwantyl pierwszy dla kosztow:  296.8 
-Kwantyl pierwszy dla obrotow:  303.3 
-Mediana dla kosztow:  359.5 
-Mediana dla obrotow:  368.3 
-Kwantyl trzeci dla kosztow:  444.05 
-Kwantyl trzeci dla obrotow:  449.7 
-Rozstep cwiartkowy dla kosztow:  147.25 
-Rozstep cwiartkowy dla obrotow:  146.4 
-Wariancja dla kosztow:  8967.137 
-Wariancja dla obrotow:  8979.955 
-Odchylenie standardowe dla kosztow:  94.69497 
-Odchylenie standardowe dla obrotow:  94.76262 
-Wspolczynnik zmiennosci dla kosztow:  0.2607916 
-Wspolczynnik zmiennosci dla obrotow:  0.2533995 
-Odchylenie cwiartkowe dla kosztow:  73.625 
-Odchylenie cwiartkowe dla obrotow:  73.2 
-Asymetria dla kosztow:  158500 
-Asymetria dla obrotow:  98471.5 
-Koncentracja dla kosztow:  163028466 
-Koncentracja dla obrotow:  164247432 
+ [1] 198.6 199.6 246.8 250.8 252.6 252.7 255.6 262.4 271.8 290.1 294.0 297.7
+[13] 303.3 303.7 305.7 320.0 321.5 322.8 322.9 337.0 345.0 353.5 361.5 361.7
+[25] 368.3 368.5 379.8 393.1 396.6 400.0 409.6 411.0 419.4 437.0 446.7 447.2
+[37] 449.7 455.9 458.4 461.9 474.0 475.8 480.3 493.2 494.9 525.5 530.0 540.6
+[49] 575.6
+
+ WARTOSCI DLA SZEREGOW SZCZEGOLOWEGO                    KOSZTY               OBROTY 
+
+ Srednia                                              363.1059             373.9653 
+
+ Odchylenie standardowe                               94.69497             94.76262 
+
+ Wariancja                                            8967.137             8979.955 
+
+ Wariancja nieobciazona                               8967.137             8979.955 
+
+ Moda                                                    540.4                540.6 
+
+ Kwantyl 1                                               296.8                303.3 
+
+ Mediana                                                 359.5                368.3 
+
+ Kwantyl 3                                              444.05                449.7 
+
+ Rozstep cwiartkowy                                     147.25                146.4 
+
+ Wspolczynnik zmiennosci                             0.2607916            0.2533995 
+
+ Odchylenie cwiartkowe                                  73.625                 73.2 
+
+ Odchylenie przecietne                                79.35502             79.79584 
+
+ Odchylenie przecietne od mediany                     79.28431             79.45714 
+
+ Skosnosc                                             1673.796             1039.139 
+
+ Kurtoza                                              2.027477             2.036809 
+
+ Eksces                                             -0.9725235           -0.9631911 
 [1] "PARAMETRY DLA SZEREGU ROZDZIELCZEGO"
-Srednia dla kosztow:  6.25 
-Srednia dla obrotow:  6 
-Kwantyl pierwszy dla kosztow:  4.75 
-Kwantyl pierwszy dla obrotow:  2.75 
-Mediana dla kosztow:  5 
-Mediana dla obrotow:  6.5 
-Kwantyl trzeci dla kosztow:  6.75 
-Kwantyl trzeci dla obrotow:  8.5 
-Rozstep cwiartkowy dla kosztow:  2 
-Rozstep cwiartkowy dla obrotow:  5.75 
-Wariancja dla kosztow:  7.928571 
-Wariancja dla obrotow:  11.14286 
-Odchylenie standardowe dla kosztow:  2.815772 
-Odchylenie standardowe dla obrotow:  3.338092 
-Wspolczynnik zmiennosci dla kosztow:  0.4505235 
-Wspolczynnik zmiennosci dla obrotow:  0.5563486 
-Odchylenie Cwiartkowe dla kosztow:  1 
-Odchylenie Cwiartkowe dla obrotow:  2.875 
-Asymetria dla kosztow:  22.78125 
-Asymetria dla obrotow:  -2.25 
-Koncentracja dla kosztow:  151.1133 
-Koncentracja dla obrotow:  140.25 
+
+ WARTOSCI DLA SZEREGOW ROZDZIELCZYCH                    KOSZTY               OBROTY 
+
+ Srednia                                              358.7665              374.337 
+
+ Odchylenie standardowe                               41.17351             44.38828 
+
+ Wariancja                                            1695.258             1970.319 
+
+ Moda                                                 296.8562                311.7 
+
+ Kwartyl 1                                            242.6474               255.15 
+
+ Mediana                                               310.315             319.7786 
+
+ Kwartyl 3                                            382.8427             401.2375 
+
+ Rozstep cwiartkowy                                   140.1953             146.0875 
+
+ Wspolczynnik zmiennosci                              11.47641             11.85784 
+
+ Odchylenie cwiartkowe                                70.09766             73.04375 
+
+ Odchylenie przecietne                                39.37133             37.49137 
+
+ Odchylenie przecietne od mediany                     41.54268             40.46298 
+
+ Skosnosc                                             663.7602             1683.973 
+
+ Kurtoza                                              11.05409             10.77246 
+
+ Eksces                                               8.054086             7.772457 
+> zadanie2(koszty, "koszty")
+Wartość statystyki testowej:  0.1056707Wartość k:  0.1241Roczne koszty maja rozklad normalny
+> zadanie2(obroty, "obroty")
+Wartość statystyki testowej:  0.0927689Wartość k:  0.1266Roczne obroty maja rozklad normalny
+> zadanie3()
+Liczebnosc przedzialu:  51 
+Suma wartosci: 18518.4 
+Srednia:  363.1059 
+Odchylenie standardowe:  94.69497 
+
+
+Dolna granica przedzialu ufnosci:  340.6623 
+Gorna granica przedzialu ufnosci:  385.5494 
+Wzgledna precyzja oszacowania:  0.0618099 
+> zadanie4()
+Wariancja: 8979.955 
+Liczebnosc przedzialu:  51 
+Dolna granica przedzialu ufnosci:  6412.44 
+Gorna granica przedzialu ufnosci:  14153.74 
+
+
+Wzgledna precyzja oszacowania:  86.20644 
+> zadanie5()
+Test   F-Snedecora
+H0: wariancje obu populacji sa rowne
+H1: wariancje kosztow jest wieksza od wariancji obrotow
+ Wartosc obliczonej statystyki: 0.9985726 
+ Obszarem krytycznym jest przedzial:(0,  0.5707915 ) u( 1.751953 , inf) . 
+Wartosc statystyki nie nalezy do obszaru krytycznego
+Wiec nie ma podstwy do odrzucenia hipotezy H0 o rownosci wariancji kosztow i obrotow
+Test t-Studenta
+H0: Srednie obroty sa rowne kosztom
+Wartosc obliczonej statystyki:  -0.5731849  
+Obszar krytyczny: ( 1.660234 , inf) 
+Obliczona statystyka nie nalezy do obszaru krytycznego.
+Brak podstaw do odrzucenia hipotezy zerowej H0
+> #todo podzielić
 > 
 > proc.time()
    user  system elapsed 
-   0.25    0.07    0.32 
+   0.34    0.07    0.42 
